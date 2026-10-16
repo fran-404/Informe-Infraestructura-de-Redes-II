@@ -1,12 +1,12 @@
 # Informe-Infraestructura-de-Redes-II
-## Informe acerca del docker-compose.yaml utilizado en la práctica de Grafana.
+## Informe acerca del _docker-compose.yaml_ utilizado en la práctica de Grafana.
 
 
 # **Servicios**
 
 ### MySQL
 
-El primer servicio visible dentro del archivo de YAML es MySql:
+El primer servicio visible dentro del archivo YAML es MySql:
 
 ```
 mysql:
@@ -44,3 +44,35 @@ file: ./my_secret.txt
 Los "secretos" son creados en un archivo guardado en el dispositivo al que se le pueden aplicar otras medidas de seguridad.
 
 https://dev.mysql.com/blog-archive/docker-secrets-and-mysql-password-management/
+
+### DBExporter
+
+DBExporter o MySQLDExporter es un servicio utilizado para exportar datos de métricas de servidores MySQL extraidos con Prometheus.
+
+La sintaxis YAML es similar a la de MySQL con la siguiente adición:
+
+```
+ volumes:
+      - ./my.cnf:/.my.cnf:ro
+    command:
+      - --config.my-cnf=/.my.cnf
+    depends_on:
+      - mysql
+```
+
+Se distingue el valor "volumes" o volúmenes, función utilizada y gestionada por los containers para almacenar datos. 
+
+Los volúmenes se alojan en un directorio especificado por el usuario y son utilizados cuando se generan datos persistentes en el container.
+Pueden ser útiles para almacenamiento de dichos datos debido a que no incrementan el uso de espacio de los containers y son rápidos.
+
+https://docs.docker.com/engine/storage/volumes/#when-to-use-volumes
+
+También se puede destacar que en este caso el archivo ```my.cnf``` esta configurado como solo lectura, lo cual evita que pueda ser modificado al montarse. 
+
+Montarlo como solo lectura previene modificaciones indeseadas que pueden comprometer el funcionamiento del servicio. Para algunas aplicaciones es necesario escribir dentro del volumen, mientras que otras no lo requieren, leer los volúmenes es suficiente. 
+
+
+Por último, la línea ```depends_on:``` del código establece el orden en el que los servicios deben arrancar o detenerse, en esta ocasión, se indica que DBExporter iniciará unicamente después de que MySQL esté en funcionamiento.
+
+
+ 
