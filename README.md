@@ -74,5 +74,18 @@ Montarlo como solo lectura previene modificaciones indeseadas que pueden comprom
 
 Por último, la línea ```depends_on:``` del código establece el orden en el que los servicios deben arrancar o detenerse, en esta ocasión, se indica que DBExporter iniciará unicamente después de que MySQL esté en funcionamiento.
 
+### CAdvisor
 
- 
+CAdvisor, por su nombre completo Container Advisor, es un servicio que provee a los usuarios una vista de la utilización de recursos de un container, extrayendo la información y exponiéndola con estadísticas.
+. También posee una interfaz web que puede ser accedida mediante un navegador.
+
+En la sintaxis se puede distinguir que las rutas están configuradas como como solo lectura para que una vez activado "descubra" la jerarquía de los grupos de control (cgroups) de  los demás containers y luego comience a recolectar la información sin realizar modificaciones. 
+```
+    volumes:
+      - /:/rootfs:ro
+      - /var/run:/var/run:ro
+      - /sys:/sys:ro
+      - /var/lib/docker/:/var/lib/docker:ro
+      - /dev/disk/:/dev/disk:ro
+```
+
