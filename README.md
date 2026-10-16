@@ -79,7 +79,10 @@ Por último, la línea ```depends_on:``` del código establece el orden en el qu
 CAdvisor, por su nombre completo Container Advisor, es un servicio que provee a los usuarios una vista de la utilización de recursos de un container, extrayendo la información y exponiéndola con estadísticas.
 . También posee una interfaz web que puede ser accedida mediante un navegador.
 
-En la sintaxis se puede distinguir que las rutas están configuradas como como solo lectura para que una vez activado "descubra" la jerarquía de los grupos de control (cgroups) de  los demás containers y luego comience a recolectar la información sin realizar modificaciones. 
+<img width="1080" height="669" alt="imagen" src="https://github.com/user-attachments/assets/b810d1f4-7752-4f67-95fe-8b5f053831d2" />
+
+
+En la sintaxis se puede distinguir que las rutas están configuradas como solo lectura para que una vez activado "descubra" la jerarquía de los grupos de control (cgroups) de  los demás containers y luego comience a recolectar la información sin realizar modificaciones. 
 ```
     volumes:
       - /:/rootfs:ro
@@ -88,4 +91,40 @@ En la sintaxis se puede distinguir que las rutas están configuradas como como s
       - /var/lib/docker/:/var/lib/docker:ro
       - /dev/disk/:/dev/disk:ro
 ```
+
+### Prometheus
+
+Creado originalmente en 2012 por la empresa de streaming de música SoundCloud, Prometheus es un sistema que recolecta métricas mediante un "scraping" de endpoints HTTPS en distintos servicios. 
+Este sistema está por fuera del docker compose y tiene un archivo .yml propio.
+
+```
+global:
+  scrape_interval: 5s
+
+scrape_configs:
+  - job_name: 'prometheus'
+    static_configs:
+      - targets: ['localhost:9090']
+
+  - job_name: 'cadvisor'
+    static_configs:
+      - targets: ['cadvisor:8080']
+
+  - job_name: 'mysql'
+    static_configs:
+      - targets: ['dbexporter:9104']
+
+  - job_name: 'crud-app'
+    static_configs:
+      - targets: ['host.docker.internal:8888']
+```
+En el código se puede distinguir ```scrape_configs:``` que estipula las configuraciones para cada servicio objetivo (mysql, dbexporter, etc) indicando el puerto al que debe prestar atención. 
+
+En la línea ``` scrape_interval: 5s``` se establece que recolectará métricas de los servicios en un intervalo de 5 segundos.
+
+Por defecto, Prometheus escucha el puerto 9090 para conexiones entrantes. Este puerto se utiliza para acceder a la interfaz web y donde otros servicios se conectan para "scrapear" métricas.
+El puerto puede ser cambiado si se desea, para evitar conflictos con otros servicios u otros motivos.
+
+
+
 
