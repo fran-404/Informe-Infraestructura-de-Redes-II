@@ -119,7 +119,7 @@ Prometheus se encuentra tanto en la configuración del docker-compose.yml como p
     image: prom/prometheus:latest
     restart: always
     ports:
-      - ":"
+      - "9090:9090"
     volumes:
       - ./prometheus.yml:/etc/prometheus/prometheus.yml
     extra_hosts:
@@ -139,7 +139,7 @@ global:
 scrape_configs:
   - job_name: 'prometheus'
     static_configs:
-      - targets: ['localhost:']
+      - targets: ['localhost:9090']
 
   - job_name: 'cadvisor'
     static_configs:
@@ -159,7 +159,7 @@ En el código se puede distinguir ```scrape_configs:``` que estipula las configu
 
 En la línea ```scrape_interval: 5s``` se establece que recolectará métricas de los servicios en intervalos de 5 segundos.
 
-Por defecto, Prometheus escucha el puerto  para conexiones entrantes. Este puerto se utiliza para acceder a la web y es donde otros servicios se conectan para "scrapear" métricas.  
+Por defecto, Prometheus escucha el puerto 9090 para conexiones entrantes. Este puerto se utiliza para acceder a la web y es donde otros servicios se conectan para "scrapear" métricas.  
 De esta forma, también se puede acceder a Prometheus desde el sistema operativo del host, por fuera de Docker.
 
 El puerto puede ser cambiado si se desea, para evitar conflictos con otros servicios u otros motivos.
