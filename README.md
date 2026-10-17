@@ -173,8 +173,12 @@ grafana:
     networks:
       - mynetwork
 ```
-Analizando el texto se puede destacar que usa una imagen especifica (para mantener la consistencia con la práctica) y una variable de entorno para establecer la contraseña por defecto como "admin" , esto es para poder iniciar sesión en la aplicación web. Luego de iniciar sesión, Grafana le sugiere al usuario cambiar la contraseña, pero no es obligatorio.  
-Tambien es visible nuevamente el atributo ```depends_on``` indicando que debe iniciar luego de Prometheus.
+Analizando el código se puede destacar que usa una imagen especifica (para mantener la consistencia con la práctica) y una variable de entorno para establecer la contraseña por defecto como "admin" , esto es para poder iniciar sesión en la aplicación web. Luego de iniciar sesión, Grafana le sugiere al usuario cambiar la contraseña, pero no es obligatorio.  
 
 
+También es visible nuevamente el atributo ```depends_on``` indicando que debe iniciar luego de Prometheus.
 
+
+## Acerca de la red.
+
+En todos los containers se utiliza la misma red, "mynetwork" y se comunican entre sí por sus nombre, esto es gracias a que a partir de Docker 1.10 se incluye un DNS integrado, el cual permite que los contenedors conectados a la misma red se puedan referenciar de esta forma, en lugar de usar direcciones IP.
