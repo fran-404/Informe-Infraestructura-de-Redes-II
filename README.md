@@ -117,7 +117,7 @@ Prometheus se encuentra en el código tanto en la configuración del docker-comp
 ```
 
 En los volúmenes se puede observar que se monta el archivo ``prometheus.yml`` mencionado, esto es para cargar las configuraciones de Prometheus preestablecidas.  
-Además, en esta configuración se puede observar la línea de ```extra_hosts```, la cual es utilizada para que un container pueda "alcanzar" servicios que están corriendo en la computadora del host.
+Además, en esta configuración se puede observar la línea de ```extra_hosts```, la cual es utilizada para que un container pueda "alcanzar" servicios que están corriendo en la computadora del host, en este caso la aplicación Flask.
 
 #### *prometheus.yml*
 ```
@@ -157,9 +157,24 @@ El puerto puede ser cambiado si se desea, para evitar conflictos con otros servi
 
 ### Grafana
 
-Grafana es un software libre que permite la visualización y el formato de datos métricos con gráficos y cuadros de mando. Es utilizado para monitorear en vivo el estado de las aplicaciones en un servidor.  
+Grafana es un software libre que permite la visualización y el formato de datos métricos con gráficos y cuadros de mando. Es utilizado para monitorear en vivo el estado de las aplicaciones de un servidor.  
 Por si solo, Grafana no recolecta los datos, por lo que depende de otras fuentes como Prometheus para leer las métricas recolectadas y mostrarlas.  
 
 ```
+grafana:
+    image: grafana/grafana:13.2.2
+    restart: always
+    ports:
+      - "3000:3000"
+    environment:
+      - GF_SECURITY_ADMIN_PASSWORD=admin
+    depends_on:
+      - prometheus
+    networks:
+      - mynetwork
+```
+Analizando el texto se puede destacar que usa una imagen especifica (para mantener la consistencia con la práctica) y una variable de entorno para establecer la contraseña por defecto como "admin" , esto es para poder iniciar sesión en la aplicación web. Luego de iniciar sesión, Grafana le sugiere al usuario cambiar la contraseña, pero no es obligatorio.  
+Tambien es visible nuevamente el atributo ```depends_on``` indicando que debe iniciar luego de Prometheus.
+
 
 
