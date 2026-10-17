@@ -2,6 +2,7 @@
 
 ## Introducción
 En este documento se realiza un informe en base a fragmentos del archivo ``setup.sh`` de la práctica publicada el día **23/09/2026**.  
+
 En el desarrollo del mismo se responderán a las consignas y se explicará el funcionamiento de algunas de las funciones del archivo ``docker-compose.yml``.
 
 
@@ -187,7 +188,7 @@ grafana:
     networks:
       - mynetwork
 ```
-Analizando el código se puede destacar que usa una imagen especifica (para mantener la consistencia en la práctica) y una variable de entorno para establecer la contraseña por defecto como "admin" , esto es para poder iniciar sesión en la aplicación web con esa credencial.  
+Analizando el código se puede destacar que usa una imagen especifica (para mantener la consistencia en la práctica) y una variable de entorno para establecer la contraseña por defecto como "admin", esto es para poder iniciar sesión en la aplicación web con esa credencial.  
 Luego de iniciar sesión, Grafana le sugiere al usuario cambiar la contraseña, pero no es obligatorio.  
 
 
