@@ -104,7 +104,7 @@ En la sintaxis YAML se puede distinguir que las rutas están configuradas como s
 ### Prometheus
 Creado originalmente en 2012 por la empresa de retransmisión de música SoundCloud, Prometheus es un sistema que recolecta métricas mediante un "scraping" de endpoints HTTPS en distintos servicios. 
 
-Prometheus se encuentra tanto en la configuración del docker-compose.yml como por fuera, con un archivo prometheus.yml propio, este último se ubica en el dispositivo del host. 
+Prometheus se encuentra tanto en la configuración del docker-compose.yml como por fuera, con un archivo ``prometheus.yml`` propio, este último se ubica en el dispositivo del host. 
 
 
 #### *docker-compose.yml*
@@ -190,3 +190,8 @@ También es visible nuevamente el atributo ```depends_on``` indicando que debe i
 ## Acerca de la red.
 
 En todos los containers se utiliza la misma red, "mynetwork" y se comunican entre sí por sus nombres, esto es gracias a que a partir de Docker 1.10 se incluye un DNS integrado, el cual permite que los containers conectados a la misma red se puedan referenciar de esta forma, en lugar de usar sus direcciones IP.
+
+[Fuente](https://stackoverflow.com/questions/31149501/how-to-reach-docker-containers-by-name-instead-of-ip-address)
+
+---
+**Fin del informe.**
