@@ -1,7 +1,7 @@
-# Informe-Infraestructura-de-Redes-II
+# Informe Infraestructura de Redes II
 
 ## Introducción
-En este documento se realiza un informe en base a fragmentos del archivo ``setup.sh`` de la práctica publicada el dia **23/09/2026**.  
+En este documento se realiza un informe en base a fragmentos del archivo ``setup.sh`` de la práctica publicada el día **23/09/2026**.  
 En el desarrollo del mismo se responderán a las consignas y se explicará el funcionamiento de algunas de las funciones del archivo ``docker-compose.yml``.
 
 
