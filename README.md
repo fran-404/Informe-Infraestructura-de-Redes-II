@@ -1,7 +1,7 @@
 # Informe-Infraestructura-de-Redes-II
 
 
-# **Servicios dentro del docker-compose**
+## **Servicios dentro del docker-compose**
 
 ### MySQL
 
@@ -76,14 +76,11 @@ Por último, la línea ```depends_on:``` del código establece el orden en el qu
 ---
 
 ### CAdvisor
+<img src="https://github.com/user-attachments/assets/b810d1f4-7752-4f67-95fe-8b5f053831d2" alt="Vista de CAdvisor" width="600" height="300">
 
 CAdvisor, por su nombre completo Container Advisor, es un servicio que provee a los usuarios una vista de la utilización de recursos de un container, extrayendo la información y exponiéndola con estadísticas.
 . También posee una interfaz web que puede ser accedida mediante un navegador.
 
-<img width="1080" height="669" alt="imagen" src="https://github.com/user-attachments/assets/b810d1f4-7752-4f67-95fe-8b5f053831d2" />
-
-
-En la sintaxis se puede distinguir que las rutas están configuradas como solo lectura para que una vez activado "descubra" la jerarquía de los grupos de control (cgroups) de  los demás containers y luego comience a recolectar la información sin realizar modificaciones. 
 ```
     volumes:
       - /:/rootfs:ro
@@ -92,6 +89,10 @@ En la sintaxis se puede distinguir que las rutas están configuradas como solo l
       - /var/lib/docker/:/var/lib/docker:ro
       - /dev/disk/:/dev/disk:ro
 ```
+
+
+En la sintaxis YAML se puede distinguir que las rutas están configuradas como solo lectura para que una vez activado "descubra" la jerarquía de los grupos de control (cgroups) de  los demás containers y luego comience a recolectar la información sin realizar modificaciones. 
+
 
 ---
 
@@ -156,6 +157,7 @@ El puerto puede ser cambiado si se desea, para evitar conflictos con otros servi
 ---
 
 ### Grafana
+<img src="https://github.com/user-attachments/assets/3611b28a-6b1d-42f6-913e-9b0cd5cf4b16" alt="Vista de Grafana" width="600" height="300">
 
 Grafana es un software libre que permite la visualización y el formato de datos métricos con gráficos y cuadros de mando. Es utilizado para monitorear en vivo el estado de las aplicaciones de un servidor.  
 Por si solo, Grafana no recolecta los datos, por lo que depende de otras fuentes como Prometheus para leer las métricas recolectadas y mostrarlas.  
@@ -181,4 +183,4 @@ También es visible nuevamente el atributo ```depends_on``` indicando que debe i
 
 ## Acerca de la red.
 
-En todos los containers se utiliza la misma red, "mynetwork" y se comunican entre sí por sus nombre, esto es gracias a que a partir de Docker 1.10 se incluye un DNS integrado, el cual permite que los contenedors conectados a la misma red se puedan referenciar de esta forma, en lugar de usar direcciones IP.
+En todos los containers se utiliza la misma red, "mynetwork" y se comunican entre sí por sus nombres, esto es gracias a que a partir de Docker 1.10 se incluye un DNS integrado, el cual permite que los containers conectados a la misma red se puedan referenciar de esta forma, en lugar de usar sus direcciones IP.
