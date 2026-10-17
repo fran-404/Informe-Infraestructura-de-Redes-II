@@ -1,8 +1,7 @@
 # Informe-Infraestructura-de-Redes-II
-## Informe acerca del _docker-compose.yaml_ utilizado en la práctica de Grafana.
 
 
-# **Servicios**
+# **Servicios dentro del docker-compose**
 
 ### MySQL
 
@@ -19,12 +18,10 @@ mysql:
 ```
 MySQL es un sistema desarrollado por Oracle Corporation utilizado en la gestión de bases de datos relacionales. Permite almacenar datos en tablas y modificarlas mediante "Querys".
 
-En la sintaxis del docker-compose se indica a través del mapeo distintos parámetros, como que imagen de MySQL utilizar (en este caso la más actual) o la red a la que debe conectarse usando una lista.
-
+En la sintaxis del docker-compose se indica a través del mapeo distintos parámetros, como que imagen de MySQL utilizar (en este caso la más actual) o la red a la que debe conectarse usando una lista.  
 El fragmento ```restart: always``` le indica a Docker que el servicio debe iniciarse siempre después de reiniciar el programa, el dispositivo o en caso de algún error como un crash.
 
-Además, se puede apreciar que la contraseña es introducida mediante una variable de entorno, las cuales son utilizadas para otorgar diversos valores de configuración a las aplicaciones o servicios que correrán dentro del container.
-
+Además, se puede apreciar que la contraseña es introducida mediante una variable de entorno, las cuales son utilizadas para otorgar diversos valores de configuración a las aplicaciones o servicios que correrán dentro del container.  
 En este caso, la variable ```MYSQL_ROOT_PASSWORD: mysecretpassword``` es utilizada para establecer como contraseña root por defecto "mysecretpassword". Esto puede ser útil para mantener la consistencia entre containers y realizar preparativos iniciales más rápido.
 
 Según la documentación de Docker, no es una buena práctica, debido a que la contraseña puede ser obtenida fácilmente por cualquier otro usuario usando un comando como ```cat docker-compose.yml```.
@@ -44,6 +41,8 @@ file: ./my_secret.txt
 Los "secretos" son creados en un archivo guardado en el dispositivo al que se le pueden aplicar otras medidas de seguridad.
 
 https://dev.mysql.com/blog-archive/docker-secrets-and-mysql-password-management/
+
+---
 
 ### DBExporter
 
@@ -74,6 +73,8 @@ Montarlo como solo lectura previene modificaciones indeseadas que pueden comprom
 
 Por último, la línea ```depends_on:``` del código establece el orden en el que los servicios deben arrancar o detenerse, en esta ocasión, se indica que DBExporter iniciará unicamente después de que MySQL esté en funcionamiento.
 
+---
+
 ### CAdvisor
 
 CAdvisor, por su nombre completo Container Advisor, es un servicio que provee a los usuarios una vista de la utilización de recursos de un container, extrayendo la información y exponiéndola con estadísticas.
@@ -92,11 +93,33 @@ En la sintaxis se puede distinguir que las rutas están configuradas como solo l
       - /dev/disk/:/dev/disk:ro
 ```
 
+---
+
 ### Prometheus
+Creado originalmente en 2012 por la empresa de retransmisión de música SoundCloud, Prometheus es un sistema que recolecta métricas mediante un "scraping" de endpoints HTTPS en distintos servicios. 
 
-Creado originalmente en 2012 por la empresa de streaming de música SoundCloud, Prometheus es un sistema que recolecta métricas mediante un "scraping" de endpoints HTTPS en distintos servicios. 
-Este sistema está por fuera del docker compose y tiene un archivo .yml propio.
+Prometheus se encuentra en el código tanto en la configuración del docker-compose.yml como por fuera, con un archivo prometheus.yml propio, este último se ubica en el dispositivo del host. 
 
+
+#### *docker-compose.yml*
+```
+ prometheus:
+    image: prom/prometheus:latest
+    restart: always
+    ports:
+      - "9090:9090"
+    volumes:
+      - ./prometheus.yml:/etc/prometheus/prometheus.yml
+    extra_hosts:
+      - "host.docker.internal:host-gateway"
+    networks:
+      - mynetwork
+```
+
+En los volúmenes se puede observar que se monta el archivo ``prometheus.yml`` mencionado, esto es para cargar las configuraciones de Prometheus preestablecidas.  
+Además, en esta configuración se puede observar la línea de ```extra_hosts```, la cual es utilizada para que un container pueda "alcanzar" servicios que están corriendo en la computadora del host.
+
+#### *prometheus.yml*
 ```
 global:
   scrape_interval: 5s
@@ -118,13 +141,25 @@ scrape_configs:
     static_configs:
       - targets: ['host.docker.internal:8888']
 ```
+
+
 En el código se puede distinguir ```scrape_configs:``` que estipula las configuraciones para cada servicio objetivo (mysql, dbexporter, etc) indicando el puerto al que debe prestar atención. 
 
-En la línea ``` scrape_interval: 5s``` se establece que recolectará métricas de los servicios en un intervalo de 5 segundos.
+En la línea ```scrape_interval: 5s``` se establece que recolectará métricas de los servicios en intervalos de 5 segundos.
 
-Por defecto, Prometheus escucha el puerto 9090 para conexiones entrantes. Este puerto se utiliza para acceder a la interfaz web y donde otros servicios se conectan para "scrapear" métricas.
+Por defecto, Prometheus escucha el puerto 9090 para conexiones entrantes. Este puerto se utiliza para acceder a la web y donde otros servicios se conectan para "scrapear" métricas.  
+De esta forma, tambien se puede acceder a Prometheus desde el sistema operativo del host, por fuera de Docker
+
 El puerto puede ser cambiado si se desea, para evitar conflictos con otros servicios u otros motivos.
 
 
+---
+
+### Grafana
+
+Grafana es un software libre que permite la visualización y el formato de datos métricos con gráficos y cuadros de mando. Es utilizado para monitorear en vivo el estado de las aplicaciones en un servidor.  
+Por si solo, Grafana no recolecta los datos, por lo que depende de otras fuentes como Prometheus para leer las métricas recolectadas y mostrarlas.  
+
+```
 
 
